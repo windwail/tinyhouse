@@ -3,7 +3,9 @@ import {
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
-  GraphQLObjectType, GraphQLSchema, GraphQLString
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString
 } from 'graphql';
 
 import {listings} from "./listings";
