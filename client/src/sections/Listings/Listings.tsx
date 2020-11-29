@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from "react"
 import {server} from '../../lib/api'
-import {ListingsData} from "./types";
+import {DeleteListingData, DeleteListingVariables, ListingsData} from "./types";
 
 const LISTINGS = `
   query Listings {
@@ -16,7 +16,15 @@ const LISTINGS = `
       rating
     }
   }
-`
+`;
+
+const DELETE_LISTINGS = `
+  mutation DeleteListing($id: ID!) {
+    deleteListing (id: $id) {
+      id
+    }
+  }
+`;
 
 interface Props {
   title: string
@@ -25,13 +33,24 @@ interface Props {
 export const Listings: FunctionComponent<Props> = ({title}: Props) => {
   const fetchListings = async () => {
     const {data} = await server.fetch<ListingsData>({query: LISTINGS});
-    console.log(data.listings[0].address)
-    console.log(data.listings[1].address)
   }
+
+  const deleteListing = async () => {
+    const {data} = await server.fetch<DeleteListingData, DeleteListingVariables>({
+      query: DELETE_LISTINGS,
+      variables: {
+        id: '5fc374ec30bcf056f377dff7'
+      }
+    });
+
+    console.log(data);
+  }
+
   return (
     <div>
       <h2>{title}</h2>
       <button onClick={fetchListings}>Query Listings!</button>
+      <button onClick={deleteListing}>Delete Listings!</button>
     </div>
   )
 }
