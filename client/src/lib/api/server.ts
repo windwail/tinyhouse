@@ -15,7 +15,15 @@ export const server = {
       },
       body: JSON.stringify(body)
     })
-    return res.json() as Promise<{ data: TData }>;
+
+    if(!res.ok) {
+      throw new Error("failed to fetch from server");
+    }
+
+    return res.json() as Promise<{
+      data: TData,
+      errors: Error[]
+    }>;
   }
 }
 

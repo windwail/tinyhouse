@@ -12,6 +12,7 @@ export const resolvers: IResolvers = {
       {db}: { db: Database })
       : Promise<Listing[]> =>
     {
+      // throw new Error("Error!");
       return await db.listings.find({}).toArray();
     }
   },
