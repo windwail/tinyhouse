@@ -1,6 +1,6 @@
-import React, {FunctionComponent, useEffect, useState} from "react"
-import {server, useQuery} from '../../lib/api'
-import {DeleteListingData, DeleteListingVariables, Listing, ListingsData} from "./types";
+import React, {FunctionComponent} from "react"
+import {useMutation, useQuery} from '../../lib/api'
+import {DeleteListingData, DeleteListingVariables, ListingsData} from "./types";
 
 const LISTINGS = `
   query Listings {
@@ -33,16 +33,14 @@ interface Props {
 export const Listings: FunctionComponent<Props> = ({title}: Props) => {
 
   const {data, refetch, loading, error} = useQuery<ListingsData>(LISTINGS);
+  const [deleteListing, {
+    loading: deleteLoading,
+    error: deleteError
+  }] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTINGS);
 
-  const deleteListing = async (id: string) => {
-    const {data} = await server.fetch<DeleteListingData, DeleteListingVariables>({
-      query: DELETE_LISTINGS,
-      variables: {
-        id
-      }
-    });
+  const handleDeleteListing = async (id: string) => {
+    await deleteListing({ id });
     refetch();
-    console.log(data);
   }
 
   const listings = data ? data.listings : null;
@@ -52,11 +50,17 @@ export const Listings: FunctionComponent<Props> = ({title}: Props) => {
       listings.map((listing) => {
         return <li key={listing.id}>
           {listing.title}
-          <button onClick={() => deleteListing(listing.id)}>Delete</button>
+          <button onClick={() => handleDeleteListing(listing.id)}>Delete</button>
         </li>
       })
     }
   </ul>) : null;
+
+  const deleteListingLoadingMessage =
+    deleteLoading ? <h4>Deletion in progress...</h4> : null;
+
+  const deleteListingErrorMessage =
+    deleteError ? <h4>Deletion error!</h4> : null;
 
   if (loading) {
     return <h2>Loading ...</h2>
@@ -67,6 +71,8 @@ export const Listings: FunctionComponent<Props> = ({title}: Props) => {
       <div>
         <h2>{title}</h2>
         {listingsList}
+        {deleteListingLoadingMessage}
+        {deleteListingErrorMessage}
       </div>
     )
   }

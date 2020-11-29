@@ -8,7 +8,7 @@ export const resolvers: IResolvers = {
     // eslint-disable-next-line @typescript-eslint/ban-types
     listings: async (
       _root: undefined,
-      _args: {},
+      _args: undefined,
       {db}: { db: Database })
       : Promise<Listing[]> =>
     {
